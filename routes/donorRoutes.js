@@ -1,6 +1,7 @@
 const express = require('express');
 const donorRouter = express.Router();
 const Donor = require("../models/donors");
+const authenticate = require('../authenticate');
 
 donorRouter.route('/')
 .all((req, res, next) => {
@@ -16,7 +17,7 @@ donorRouter.route('/')
             })
             .catch((err) => next(err));
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     Donor.create(req.body)
             .then((donor) => {
                 console.log("Donor Created ", donor);
@@ -25,11 +26,11 @@ donorRouter.route('/')
             })
             .catch((err) => next(err));
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /donor');
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Donor.deleteMany()
             .then((response) => {
                 res.statusCode = 200;
@@ -52,13 +53,13 @@ donorRouter.route('/:donorId')
             })
             .catch((err) => next(err));
 })
-.post((req, res) => {
+.post(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
         res.end(
             `POST operation not supported on /donors/${req.params.donorId}`
         );
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Donor.findByIdAndUpdate(
         req.params.donorId,
         {
@@ -72,7 +73,7 @@ donorRouter.route('/:donorId')
         })
         .catch((err) => next(err));
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Donor.findByIdAndDelete(req.params.donorId)
             .then((response) => {
                 res.statusCode = 200;

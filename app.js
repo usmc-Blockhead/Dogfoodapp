@@ -3,16 +3,20 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const config = require('./config');
+const passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var donorRoutes = require('./routes/donorRoutes');
+var recipientRoutes = require('./routes/recipientRoutes');
+var foodRoutes = require('./routes/foodRoutes');
 
 var app = express();
 
 const mongoose = require('mongoose');
 
-const url = 'mongodb://localhost:27017/nucampsite';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
     useCreateIndex: true,
     useFindAndModify: false,
@@ -32,11 +36,20 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 app.use('/donors', donorRoutes);
+app.use('/recipients', recipientRoutes);
+app.use('/food', foodRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

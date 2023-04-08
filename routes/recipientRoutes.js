@@ -1,6 +1,7 @@
 const express = require('express');
 const recipientRouter = express.Router();
 const Recipient = require("../models/recipients");
+const authenticate = require('../authenticate');
 
 recipientRouter.route('/')
 .all((req, res, next) => {
@@ -16,7 +17,7 @@ recipientRouter.route('/')
             })
             .catch((err) => next(err));
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     Recipient.create(req.body)
             .then((recipient) => {
                 console.log("Recipient Created ", recipient);
@@ -25,11 +26,11 @@ recipientRouter.route('/')
             })
             .catch((err) => next(err));
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /recipient');
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Recipient.deleteMany()
             .then((response) => {
                 res.statusCode = 200;
@@ -52,13 +53,13 @@ recipientRouter.route('/:recipientId')
             })
             .catch((err) => next(err));
 })
-.post((req, res) => {
+.post(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
         res.end(
             `POST operation not supported on /recipients/${req.params.recipientId}`
         );
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Recipient.findByIdAndUpdate(
         req.params.recipientId,
         {
@@ -72,7 +73,7 @@ recipientRouter.route('/:recipientId')
         })
         .catch((err) => next(err));
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
     Recipient.findByIdAndDelete(req.params.recipientId)
             .then((response) => {
                 res.statusCode = 200;
