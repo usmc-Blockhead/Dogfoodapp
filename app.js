@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const config = require('./config');
 const passport = require('passport');
+const {OAuth2Client} = require('google-auth-library');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
