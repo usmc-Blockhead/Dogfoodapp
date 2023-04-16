@@ -7,6 +7,7 @@ const config = require('./config');
 const passport = require('passport');
 const {OAuth2Client} = require('google-auth-library');
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var donorRoutes = require('./routes/donorRoutes');
@@ -14,6 +15,8 @@ var recipientRoutes = require('./routes/recipientRoutes');
 var foodRoutes = require('./routes/foodRoutes');
 
 var app = express();
+const cors = require('cors');
+app.use(cors());
 
 const mongoose = require('mongoose');
 
