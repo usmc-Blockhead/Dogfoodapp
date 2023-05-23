@@ -1,0 +1,8 @@
+{
+    "app_id": "dogfoogapp-iotsd",
+    "config_version": 20210101,
+    "name": "dogfoogapp",
+    "location": "US-VA",
+    "provider_region": "gcp-us-central1",
+    "deployment_model": "LOCAL"
+}
